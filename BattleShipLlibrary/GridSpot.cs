@@ -31,6 +31,7 @@ namespace BattleShipLlibrary
 
         public string SpotLetter { get => _spotLetter; set => _spotLetter = value; }
         public int SpotNumber { get => _spotNumber; set => _spotNumber = value; }
+        public eSpotStatus Status { get => _status; set => _status = value; }
 
         #endregion
     }

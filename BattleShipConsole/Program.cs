@@ -12,11 +12,29 @@ namespace BattleShipConsole
         static void Main(string[] args)
         {
             PrintWelcomeMessage();
-            PlayerInfo activePlayer= creatPlayer("Player 1");
-            PlayerInfo opponent= creatPlayer("Player 2");
-            PlayerInfo winner= null;
+            PlayerInfo activePlayer = creatPlayer("Player 1");
+            PlayerInfo opponent = creatPlayer("Player 2");
+            PlayerInfo winner = null;
 
-            AskingForName();
+            Console.WriteLine(activePlayer.displayShotGrid());
+            recordPlayerShot(activePlayer, opponent);
+
+            Console.ReadLine();
+        }
+
+        private static void recordPlayerShot(PlayerInfo activePlayer, PlayerInfo opponent)
+        {
+            var shot = AskForShot(activePlayer);
+            (string row,int column)=GameLogic.getRowAndColumn(shot);
+            GameLogic.ValidateLocation(activePlayer, row, column);
+
+        }
+
+        private static string AskForShot(PlayerInfo activePlayer)
+        {
+            Console.WriteLine($"{activePlayer.Name}: Please take Your Shot");
+            var shot = Console.ReadLine();
+            return shot;
         }
 
         private static PlayerInfo creatPlayer(string player)
@@ -41,23 +59,17 @@ namespace BattleShipConsole
         {
             do
             {
-                Console.Write($"Where do you want to place your ship {playerInfo.ShipLocations.Count+1}:");
+                Console.Write($"Where do you want to place your ship {playerInfo.ShipLocations.Count + 1}:");
                 var location = Console.ReadLine();
-                var isPlacementSuccessful = false;
                 try
                 {
-                    isPlacementSuccessful= GameLogic.PlaceShip(playerInfo, location);
+                    GameLogic.PlaceShip(playerInfo, location);
                 }
                 catch (Exception ex)
                 {
-                    Console.WriteLine("Error:", ex.Message);
+                    Console.WriteLine($"Error: {ex.Message}");
                 }
-
-                if (!isPlacementSuccessful)
-                {
-                    Console.WriteLine("This was not a valid location. Plase try Again");
-                }
-            } while (playerInfo.ShipLocations.Count<5);
+            } while (playerInfo.ShipLocations.Count < 5);
         }
 
         private static void PrintWelcomeMessage()
@@ -69,7 +81,7 @@ namespace BattleShipConsole
 
         private static string AskingForName()
         {
-            Console.Write("User 1: Enter Your name: ");
+            Console.Write("Enter Your name: ");
             return Console.ReadLine();
         }
     }

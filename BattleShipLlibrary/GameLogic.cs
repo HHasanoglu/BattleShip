@@ -8,21 +8,30 @@ namespace BattleShipLlibrary
 {
     public static class GameLogic
     {
-        public static bool PlaceShip(PlayerInfo PlayerInfo, string location) 
+        public static void PlaceShip(PlayerInfo PlayerInfo, string location)
         {
             (string letter, int number) = getRowAndColumn(location);
-            var isLocationValid = PlayerInfo.ShotGrids.Any(x => x.SpotLetter == letter && x.SpotNumber == number);
-            var isSpotAvailable = PlayerInfo.ShipLocations.Any(x => x.SpotLetter != letter && x.SpotNumber != number);
+            bool isLocationValid = ValidateLocation(PlayerInfo, letter, number);
+            var isSpotAvailable = !PlayerInfo.ShipLocations.Any(x => x.SpotLetter == letter && x.SpotNumber == number);
             if (isLocationValid && isSpotAvailable)
             {
                 PlayerInfo.ShipLocations.Add(new GridSpot(letter, number, eSpotStatus.Ship));
             }
+            else
+            {
+                throw new ArgumentException("This was not a valid location.Plase try Again");
+            }
 
 
-            return isLocationValid && isSpotAvailable;
+            //return isLocationValid && isSpotAvailable;
         }
 
-        private static (string row, int number) getRowAndColumn(string location)
+        public static bool ValidateLocation(PlayerInfo PlayerInfo, string letter, int number)
+        {
+            return PlayerInfo.ShotGrids.Any(x => x.SpotLetter == letter && x.SpotNumber == number);
+        }
+
+        public static (string row, int number) getRowAndColumn(string location)
         {
             string letter ;
             int number = 0;
